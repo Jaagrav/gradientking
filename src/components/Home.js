@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import Gradient from "./Gradient";
-import VirtualizedList from "./VirtualizedList";
 
 function Home({ align, savedGradients, setSavedGradients }) {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState([]),
+    [current, setCurrent] = useState([]),
+    history = useHistory();
 
   const getData = () => {
     fetch("./data.json", {
@@ -13,12 +15,11 @@ function Home({ align, savedGradients, setSavedGradients }) {
       },
     })
       .then(function (response) {
-        console.log(response);
         return response.json();
       })
-      .then(function (data) {
-        console.log(data);
-        setData(data);
+      .then(function (resp) {
+        setData(resp);
+        setCurrent(resp.splice(0, 20));
       });
   };
 
@@ -26,9 +27,26 @@ function Home({ align, savedGradients, setSavedGradients }) {
     getData();
   }, []);
 
+  useEffect(() => {
+    return window.addEventListener("scroll", (e) => {
+      if (
+        document.documentElement.scrollTop +
+          document.documentElement.clientHeight >=
+        document.documentElement.scrollHeight - 250
+      ) {
+        let cutElems = data.length;
+        if (data.length >= 20) cutElems = 20;
+        setCurrent((prevCurrent) => [
+          ...prevCurrent,
+          ...data.splice(0, cutElems),
+        ]);
+      }
+    });
+  }, [data]);
+
   return (
-    <VirtualizedList>
-      {data.map((gradient) => (
+    <div className="colorCont flex">
+      {current.map((gradient) => (
         <Gradient
           gradient={gradient}
           id={gradient.id}
@@ -38,7 +56,7 @@ function Home({ align, savedGradients, setSavedGradients }) {
           setSavedGradients={setSavedGradients}
         />
       ))}
-    </VirtualizedList>
+    </div>
   );
 }
 
