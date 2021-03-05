@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Gradient from "./Gradient";
+import VirtualizedList from "./VirtualizedList";
 
 function Home({ align, savedGradients, setSavedGradients }) {
   const [data, setData] = useState([]);
@@ -26,7 +27,7 @@ function Home({ align, savedGradients, setSavedGradients }) {
   }, []);
 
   return (
-    <div className="colorCont flex">
+    <VirtualizedList>
       {data.map((gradient) => (
         <Gradient
           gradient={gradient}
@@ -37,7 +38,7 @@ function Home({ align, savedGradients, setSavedGradients }) {
           setSavedGradients={setSavedGradients}
         />
       ))}
-    </div>
+    </VirtualizedList>
   );
 }
 

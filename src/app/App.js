@@ -14,7 +14,6 @@ import Notfound from "../components/Notfound";
 import SavedGradients from "../components/SavedGradients";
 import { useMediaQuery } from "@material-ui/core";
 import clsx from "clsx";
-import { Collection } from "react-virtualized";
 
 const App = () => {
   const [align, setAlign] = useLocalStorage("align:", "left");
